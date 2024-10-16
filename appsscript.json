@@ -1,0 +1,31 @@
+{
+  "timeZone": "America/Los_Angeles",
+  "oauthScopes": [
+    "https://www.googleapis.com/auth/gmail.readonly",
+    "https://www.googleapis.com/auth/script.external_request",
+    "https://www.googleapis.com/auth/gmail.addons.execute"
+  ],
+  "addOns": {
+    "common": {
+      "name": "Himaya",
+      "logoUrl": "https://example.com/logo.png",
+      "layoutProperties": {
+        "primaryColor": "#4285F4",
+        "secondaryColor": "#FF0000"
+      }
+    },
+    "gmail": {
+      "contextualTriggers": [
+        {
+          "unconditional": {},
+          "onTriggerFunction": "onGmailMessageOpen"
+        }
+      ],
+      "homepageTrigger": {
+        "runFunction": "onGmailHomePageOpen",
+        "enabled": true
+      }
+    }
+  }
+}
+
