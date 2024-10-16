@@ -20,7 +20,9 @@ function onGmailMessageOpen(e) {
   // Only show the alert card if malicious content is detected
   if (result.isMalicious) {
     return createAlertCard(result.reason);
-  } 
+  }
+  // If no malicious content, do nothing (no card displayed)
+  return null;
 }
 
 function onGmailHomePageOpen(e) {
@@ -31,6 +33,22 @@ function onGmailHomePageOpen(e) {
       .addWidget(CardService.newTextParagraph()
         .setText("Himaya is protecting your inbox. Open an email to scan for threats.")))
     .build();
+}
+
+// Function to scan all threads, not just inbox
+function scanAllEmails() {
+  var threads = GmailApp.getInboxThreads();  // Get all inbox threads
+  
+  for (var i = 0; i < threads.length; i++) {
+    var messages = threads[i].getMessages();
+    
+    for (var j = 0; j < messages.length; j++) {
+      var result = Himaya(messages[j]);  // Scan each message
+      if (result.isMalicious) {
+        createAlertCard(result.reason);  // Show alert for malicious content
+      }
+    }
+  }
 }
 
 function Himaya(email) {
@@ -78,9 +96,7 @@ function createAlertCard(reason) {
       .setImageUrl("https://www.gstatic.com/images/icons/material/system/1x/warning_red_48dp.png"))
     .addSection(CardService.newCardSection()
       .addWidget(CardService.newTextParagraph()
-        .setText("Malicious email detected: " + reason))  // Removed setTextAlignment
-      .setCollapsible(false)
-      .setNumUncollapsibleWidgets(1))
+        .setText("Malicious email detected: " + reason)))
     .setFixedFooter(CardService.newFixedFooter()
       .setPrimaryButton(CardService.newTextButton()
         .setText("Dismiss")
@@ -217,3 +233,4 @@ function checkOTX(indicator, apiKey, type) {
   }
   return false;
 }
+
