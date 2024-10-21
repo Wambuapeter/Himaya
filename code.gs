@@ -63,9 +63,9 @@ function scanAllEmails() {
 }
 
 function Himaya(email) {
-  var VTapiKey = '5641fe2ba079cbe16f4480bcbd26eccb894ddcb70a0af8853a85e6a383189a25';
-  var MBapiKey = '3e4f0e95596ba839ea2351e7310ee8d6';
-  var OTXapiKey = '2e9754525c7697acf8fb7d25dff7435b31e7639f32f916148cbcc004b98d6673';
+  var VTapiKey = '';
+  var MBapiKey = '';
+  var OTXapiKey = '';
   
   var isMalicious = false;
   var maliciousReason = '';
@@ -83,7 +83,7 @@ function Himaya(email) {
       Utilities.sleep(15000);  // To avoid rate limiting
       if (checkLink(links[l], VTapiKey, OTXapiKey)) {
         isMalicious = true;
-        maliciousReason = 'RANSOMWARE ASSOCIATED LINK';
+        maliciousReason = 'RANSOMWARE ASSOCIATED LINK💀🚨';
         break;
       }
     }
@@ -99,7 +99,7 @@ function Himaya(email) {
         Utilities.sleep(15000);  // Avoid rate limiting
         if (checkAttachment(attachments[a], VTapiKey, OTXapiKey, MBapiKey)) {
           isMalicious = true;
-          maliciousReason = 'RANSOMWARE ASSOCIATED ATTACHMENT';
+          maliciousReason = 'RANSOMWARE ASSOCIATED ATTACHMENT💀🚨';
           break;
         }
       }
@@ -117,12 +117,15 @@ function Himaya(email) {
 function createAlertCard(reason) {
   return CardService.newCardBuilder()
     .setHeader(CardService.newCardHeader()
-      .setTitle("⚠️ ALERT: Ransomware Detected ⚠️")
+      .setTitle("**⚠️ ALERT: 💀Ransomware💀 🚨🔴Detected🔴🚨 ⚠️**")
       .setImageStyle(CardService.ImageStyle.SQUARE)
-      .setImageUrl("https://www.gstatic.com/images/icons/material/system/1x/warning_red_48dp.png"))
+      .setImageUrl("https://www.iconsdb.com/icons/preview/red/warning-xxl.png"))
     .addSection(CardService.newCardSection()
       .addWidget(CardService.newTextParagraph()
-        .setText(reason)))
+        .setText(reason))
+      .addWidget(CardService.newTextParagraph()
+        .setText("1. ⛔️🚫Do not🙅🏽 click on any attached link or attachment.🚫⛔️\n"
+                  + "2. 🤙🏼Immediately contact your hospital’s cybersecurity/IT specialist for further assistance.🤙🏼")))
     .setFixedFooter(CardService.newFixedFooter()
       .setPrimaryButton(CardService.newTextButton()
         .setText("Dismiss")
