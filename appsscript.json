@@ -3,12 +3,13 @@
   "oauthScopes": [
     "https://www.googleapis.com/auth/gmail.readonly",
     "https://www.googleapis.com/auth/script.external_request",
-    "https://www.googleapis.com/auth/gmail.addons.execute"
+    "https://www.googleapis.com/auth/gmail.addons.execute",
+    "https://www.googleapis.com/auth/gmail.modify"
   ],
   "addOns": {
     "common": {
       "name": "Himaya",
-      "logoUrl": "https://example.com/logo.png",
+      "logoUrl": "https://thecyberlearner.github.io/images/Himaya/HimayaLogo.png",
       "layoutProperties": {
         "primaryColor": "#4285F4",
         "secondaryColor": "#FF0000"
