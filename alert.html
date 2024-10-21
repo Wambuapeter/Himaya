@@ -1,0 +1,28 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Threat Alert</title>
+  <script>
+    function playAlertSound() {
+      var audio = new Audio('https://www.soundjay.com/button/beep-07.wav'); // Replace with your sound file URL
+      audio.play();
+    }
+
+    function getReasonFromURL() {
+      const params = new URLSearchParams(window.location.search);
+      return params.get("reason") || "Unknown threat detected.";
+    }
+
+    window.onload = function() {
+      playAlertSound();
+      const reason = getReasonFromURL();
+      document.getElementById('alert-message').innerText = reason;
+      alert("⚠️ " + reason);
+    }
+  </script>
+</head>
+<body>
+  <h2>Threat Alert ⚠️</h2>
+  <p id="alert-message">A threat has been detected. Please review the email in your Gmail inbox.</p>
+</body>
+</html>
