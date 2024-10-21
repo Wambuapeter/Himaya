@@ -17,11 +17,22 @@ function onGmailMessageOpen(e) {
   var message = GmailApp.getMessageById(messageId);
   var result = Himaya(message);  // Passing the message to Himaya
   
-  // Only show the alert card if malicious content is detected
+  // If malicious content is detected
   if (result.isMalicious) {
     return createAlertCard(result.reason);
   }
-  // If no malicious content, do nothing (no card displayed)
+  
+  // If there are no links or attachments in the email
+  if (result.noLinksOrAttachments) {
+    return createSafeEmailCard("Safe email: No links or attachments found.");
+  }
+  
+  // If there are links or attachments, but none are malicious
+  if (!result.isMalicious && result.hasLinksOrAttachments) {
+    return createSafeEmailCard("Safe email: No Ransomware detected.");
+  }
+
+  // Default: do nothing (no card displayed)
   return null;
 }
 
@@ -58,49 +69,74 @@ function Himaya(email) {
   
   var isMalicious = false;
   var maliciousReason = '';
+  var hasLinksOrAttachments = false;
+  var noLinksOrAttachments = true;
 
   // Check email body for links
   var body = email.getPlainBody();
   var links = extractUrls(body);
   
-  for (var l = 0; l < links.length; l++) {
-    Utilities.sleep(15000);  // To avoid rate limiting
-    if (checkLink(links[l], VTapiKey, OTXapiKey)) {
-      isMalicious = true;
-      maliciousReason = 'RANSOMWARE ASSOCIATED LINK';
-      break;
+  if (links.length > 0) {
+    noLinksOrAttachments = false;  // There are links in the email
+    hasLinksOrAttachments = true;
+    for (var l = 0; l < links.length; l++) {
+      Utilities.sleep(15000);  // To avoid rate limiting
+      if (checkLink(links[l], VTapiKey, OTXapiKey)) {
+        isMalicious = true;
+        maliciousReason = 'RANSOMWARE ASSOCIATED LINK';
+        break;
+      }
     }
   }
 
   // Check attachments if no malicious links found
   if (!isMalicious) {
     var attachments = email.getAttachments();
-    for (var a = 0; a < attachments.length; a++) {
-      Utilities.sleep(15000);  // Avoid rate limiting
-      if (checkAttachment(attachments[a], VTapiKey, OTXapiKey, MBapiKey)) {
-        isMalicious = true;
-        maliciousReason = 'RANSOMWARE ASSOCIATED ATTACHMENT';
-        break;
+    if (attachments.length > 0) {
+      noLinksOrAttachments = false;  // There are attachments in the email
+      hasLinksOrAttachments = true;
+      for (var a = 0; a < attachments.length; a++) {
+        Utilities.sleep(15000);  // Avoid rate limiting
+        if (checkAttachment(attachments[a], VTapiKey, OTXapiKey, MBapiKey)) {
+          isMalicious = true;
+          maliciousReason = 'RANSOMWARE ASSOCIATED ATTACHMENT';
+          break;
+        }
       }
     }
   }
 
-  return { isMalicious: isMalicious, reason: maliciousReason };
+  return { 
+    isMalicious: isMalicious, 
+    reason: maliciousReason, 
+    hasLinksOrAttachments: hasLinksOrAttachments, 
+    noLinksOrAttachments: noLinksOrAttachments 
+  };
 }
 
 function createAlertCard(reason) {
   return CardService.newCardBuilder()
     .setHeader(CardService.newCardHeader()
-      .setTitle("⚠️ ALERT: Malicious Content Detected ⚠️")
+      .setTitle("⚠️ ALERT: Ransomware Detected ⚠️")
       .setImageStyle(CardService.ImageStyle.SQUARE)
       .setImageUrl("https://www.gstatic.com/images/icons/material/system/1x/warning_red_48dp.png"))
     .addSection(CardService.newCardSection()
       .addWidget(CardService.newTextParagraph()
-        .setText("Malicious email detected: " + reason)))
+        .setText(reason)))
     .setFixedFooter(CardService.newFixedFooter()
       .setPrimaryButton(CardService.newTextButton()
         .setText("Dismiss")
         .setOnClickAction(CardService.newAction().setFunctionName("dismissAlert"))))
+    .build();
+}
+
+function createSafeEmailCard(text) {
+  return CardService.newCardBuilder()
+    .setHeader(CardService.newCardHeader()
+      .setTitle("✅ Safe Email"))
+    .addSection(CardService.newCardSection()
+      .addWidget(CardService.newTextParagraph()
+        .setText(text)))
     .build();
 }
 
