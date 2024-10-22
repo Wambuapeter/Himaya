@@ -55,7 +55,7 @@ To install Himaya:
 
 ## 📖 **Usage**
 
-- Install Himaya following the [Installation](#installation) instructions.
+- Install Himaya following the [Installation](#-installation) instructions.
 - Once deployed, Himaya will scan every new email automatically.
 - If malicious content is detected, an alert card will appear in the Gmail interface with detailed recommendations.
 
@@ -63,4 +63,4 @@ To install Himaya:
 
 ## 📘 **Documentation**
 
-For the full documentation about the problem, the research, solution idea etc , please visit the [Himaya Documentation](https://github.com/wambuapeter/Himaya/Documentation).
+For the full documentation about the problem, the research, solution idea etc , please visit the [Himaya Documentation](https://github.com/Wambuapeter/Himaya/tree/master/Documentation).
